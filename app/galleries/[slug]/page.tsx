@@ -1,7 +1,7 @@
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { MasonryGallery } from "@/components/masonry-gallery"
-import { getImagesByTag, getAllTags } from "@/lib/portfolio-data"
+import { getPhotosByTag, getAllTags } from "@/lib/sanity-queries"
 import { notFound } from "next/navigation"
 
 interface GalleryPageProps {
@@ -10,26 +10,23 @@ interface GalleryPageProps {
   }
 }
 
-// Generate static paths for all galleries
-export function generateStaticParams() {
-  const tags = getAllTags()
+export async function generateStaticParams() {
+  const tags = await getAllTags()
   return tags.map((tag) => ({
     slug: tag.toLowerCase().replace(/\s+/g, "-"),
   }))
 }
 
-export default function GalleryPage({ params }: GalleryPageProps) {
+export default async function GalleryPage({ params }: GalleryPageProps) {
   // Convert slug back to tag name
   const tagName = params.slug
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ")
 
-  // Get images for this tag
-  const images = getImagesByTag(tagName)
+  const photos = await getPhotosByTag(tagName)
 
-  // If no images found, show 404
-  if (images.length === 0) {
+  if (photos.length === 0) {
     notFound()
   }
 
@@ -37,7 +34,7 @@ export default function GalleryPage({ params }: GalleryPageProps) {
     <main>
       <Navigation />
       <div className="pt-24">
-        <MasonryGallery images={images} title={tagName} description={`${images.length} photographs`} />
+        <MasonryGallery photos={photos} title={tagName} description={`${photos.length} photographs`} />
       </div>
       <Footer />
     </main>

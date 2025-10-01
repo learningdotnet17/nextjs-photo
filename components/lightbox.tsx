@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react"
 import { X, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from "lucide-react"
-import type { PortfolioImage } from "@/lib/portfolio-data"
+import type { Photo } from "@/lib/sanity-queries"
+import { getPhotoMetadata } from "@/lib/sanity-queries"
+import { urlFor } from "@/sanity/client"
 import { cn } from "@/lib/utils"
 
 interface LightboxProps {
-  image: PortfolioImage
+  photo: Photo
   isOpen: boolean
   onClose: () => void
   onNext?: () => void
@@ -15,8 +17,10 @@ interface LightboxProps {
   hasPrev?: boolean
 }
 
-export function Lightbox({ image, isOpen, onClose, onNext, onPrev, hasNext, hasPrev }: LightboxProps) {
+export function Lightbox({ photo, isOpen, onClose, onNext, onPrev, hasNext, hasPrev }: LightboxProps) {
   const [isMetadataOpen, setIsMetadataOpen] = useState(true)
+
+  const metadata = getPhotoMetadata(photo)
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -40,7 +44,6 @@ export function Lightbox({ image, isOpen, onClose, onNext, onPrev, hasNext, hasP
 
   return (
     <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center">
-      {/* Close button */}
       <button
         onClick={onClose}
         className="absolute top-4 right-4 z-50 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
@@ -49,7 +52,6 @@ export function Lightbox({ image, isOpen, onClose, onNext, onPrev, hasNext, hasP
         <X className="w-6 h-6 text-white" />
       </button>
 
-      {/* Navigation buttons */}
       {hasPrev && onPrev && (
         <button
           onClick={onPrev}
@@ -70,17 +72,15 @@ export function Lightbox({ image, isOpen, onClose, onNext, onPrev, hasNext, hasP
         </button>
       )}
 
-      {/* Main content */}
       <div className="w-full h-full flex items-center justify-center p-4 lg:p-8">
-        {/* Image - now takes full space */}
         <div className="relative w-full h-full flex items-center justify-center">
           <img
-            src={image.src || "/placeholder.svg"}
-            alt={image.alt}
+            src={urlFor(photo.image).width(2400).url() || "/placeholder.svg"}
+            alt={photo.image.alt}
             className={cn(
               "max-w-full max-h-full object-contain rounded-lg",
-              image.orientation === "portrait" && "max-h-[90vh]",
-              image.orientation === "landscape" && "max-w-[95vw]",
+              photo.orientation === "portrait" && "max-h-[90vh]",
+              photo.orientation === "landscape" && "max-w-[95vw]",
             )}
           />
 
@@ -96,7 +96,7 @@ export function Lightbox({ image, isOpen, onClose, onNext, onPrev, hasNext, hasP
                 className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors"
                 aria-label={isMetadataOpen ? "Hide details" : "Show details"}
               >
-                <h2 className="font-serif text-xl lg:text-2xl font-light text-white">{image.title}</h2>
+                <h2 className="font-serif text-xl lg:text-2xl font-light text-white">{photo.title}</h2>
                 {isMetadataOpen ? (
                   <ChevronDown className="w-5 h-5 text-white/70 lg:rotate-90" />
                 ) : (
@@ -106,38 +106,52 @@ export function Lightbox({ image, isOpen, onClose, onNext, onPrev, hasNext, hasP
 
               {isMetadataOpen && (
                 <div className="px-4 pb-4 overflow-y-auto max-h-[calc(60vh-4rem)]">
-                  <p className="text-lg text-white/80 mb-3">{image.headline}</p>
-                  <p className="text-white/70 mb-6 leading-relaxed text-sm">{image.description}</p>
+                  {photo.headline && <p className="text-lg text-white/80 mb-3">{photo.headline}</p>}
+                  {photo.description && (
+                    <p className="text-white/70 mb-6 leading-relaxed text-sm">{photo.description}</p>
+                  )}
 
                   <div className="space-y-2 text-sm">
-                    {image.metadata.location && (
+                    {metadata.location && (
                       <div className="flex justify-between">
                         <span className="text-white/50">Location</span>
-                        <span className="text-white/90">{image.metadata.location}</span>
+                        <span className="text-white/90">{metadata.location}</span>
                       </div>
                     )}
-                    {image.metadata.date && (
-                      <div className="flex justify-between">
-                        <span className="text-white/50">Date</span>
-                        <span className="text-white/90">{image.metadata.date}</span>
-                      </div>
-                    )}
-                    {image.metadata.camera && (
+                    {metadata.camera && (
                       <div className="flex justify-between">
                         <span className="text-white/50">Camera</span>
-                        <span className="text-white/90">{image.metadata.camera}</span>
+                        <span className="text-white/90">{metadata.camera}</span>
                       </div>
                     )}
-                    {image.metadata.lens && (
+                    {metadata.lens && (
                       <div className="flex justify-between">
                         <span className="text-white/50">Lens</span>
-                        <span className="text-white/90">{image.metadata.lens}</span>
+                        <span className="text-white/90">{metadata.lens}</span>
                       </div>
                     )}
-                    {image.metadata.settings && (
+                    {metadata.aperture && (
                       <div className="flex justify-between">
-                        <span className="text-white/50">Settings</span>
-                        <span className="text-white/90">{image.metadata.settings}</span>
+                        <span className="text-white/50">Aperture</span>
+                        <span className="text-white/90">{metadata.aperture}</span>
+                      </div>
+                    )}
+                    {metadata.shutterSpeed && (
+                      <div className="flex justify-between">
+                        <span className="text-white/50">Shutter Speed</span>
+                        <span className="text-white/90">{metadata.shutterSpeed}</span>
+                      </div>
+                    )}
+                    {metadata.iso && (
+                      <div className="flex justify-between">
+                        <span className="text-white/50">ISO</span>
+                        <span className="text-white/90">{metadata.iso}</span>
+                      </div>
+                    )}
+                    {metadata.focalLength && (
+                      <div className="flex justify-between">
+                        <span className="text-white/50">Focal Length</span>
+                        <span className="text-white/90">{metadata.focalLength}</span>
                       </div>
                     )}
                   </div>

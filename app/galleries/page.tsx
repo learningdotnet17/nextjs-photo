@@ -1,10 +1,23 @@
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { getGalleries } from "@/lib/portfolio-data"
+import { getAllTags, getPhotosByTag } from "@/lib/sanity-queries"
+import { urlFor } from "@/sanity/client"
 
-export default function GalleriesPage() {
-  const galleries = getGalleries()
+export default async function GalleriesPage() {
+  const tags = await getAllTags()
+
+  const galleries = await Promise.all(
+    tags.map(async (tag) => {
+      const photos = await getPhotosByTag(tag)
+      return {
+        slug: tag.toLowerCase().replace(/\s+/g, "-"),
+        title: tag,
+        count: photos.length,
+        coverImage: photos[0], // First photo as cover
+      }
+    }),
+  )
 
   return (
     <main>
@@ -26,7 +39,7 @@ export default function GalleriesPage() {
                 className="group relative overflow-hidden rounded-lg bg-muted aspect-[4/3] cursor-pointer"
               >
                 <img
-                  src={gallery.coverImage.src || "/placeholder.svg"}
+                  src={urlFor(gallery.coverImage.image).width(800).height(600).url() || "/placeholder.svg"}
                   alt={gallery.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
