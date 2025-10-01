@@ -11,14 +11,20 @@ interface GalleryPageProps {
 }
 
 export async function generateStaticParams() {
-  const tags = await getAllTags()
-  return tags.map((tag) => ({
-    slug: tag.toLowerCase().replace(/\s+/g, "-"),
-  }))
+  try {
+    const tags = await getAllTags()
+    return tags.map((tag) => ({
+      slug: tag.toLowerCase().replace(/\s+/g, "-"),
+    }))
+  } catch (error) {
+    console.error("Error generating static params:", error)
+    return []
+  }
 }
 
+export const revalidate = 3600
+
 export default async function GalleryPage({ params }: GalleryPageProps) {
-  // Convert slug back to tag name
   const tagName = params.slug
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
