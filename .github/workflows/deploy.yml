@@ -24,8 +24,34 @@ jobs:
     - name: Install dependencies
       run: pnpm install
       
+    - name: Create .env.production file
+      run: |
+        echo "NEXT_PUBLIC_SANITY_PROJECT_ID=${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}" > .env.production
+        echo "NEXT_PUBLIC_SANITY_DATASET=${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}" >> .env.production
+        echo "✓ Created .env.production file"
+        
+    - name: Verify environment variables
+      run: |
+        echo "Checking if SANITY_PROJECT_ID is set..."
+        if [ -z "$NEXT_PUBLIC_SANITY_PROJECT_ID" ]; then
+          echo "ERROR: NEXT_PUBLIC_SANITY_PROJECT_ID is not set"
+          exit 1
+        else
+          echo "✓ NEXT_PUBLIC_SANITY_PROJECT_ID is set (length: ${#NEXT_PUBLIC_SANITY_PROJECT_ID})"
+        fi
+        if [ -z "$NEXT_PUBLIC_SANITY_DATASET" ]; then
+          echo "ERROR: NEXT_PUBLIC_SANITY_DATASET is not set"
+          exit 1
+        else
+          echo "✓ NEXT_PUBLIC_SANITY_DATASET is set: $NEXT_PUBLIC_SANITY_DATASET"
+        fi
+        cat .env.production
+      env:
+        NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
+        NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}
+      
     - name: Build
-      run: npm run build
+      run: pnpm run build
       env:
         NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
         NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}
