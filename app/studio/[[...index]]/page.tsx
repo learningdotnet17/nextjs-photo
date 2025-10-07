@@ -2,29 +2,11 @@
 
 import { NextStudio } from "next-sanity/studio"
 import config from "@/sanity/config"
-import { useEffect, useState } from "react"
+
+// Prevent server-side rendering issues
+export const dynamic = 'force-dynamic'
 
 export default function StudioPage() {
-  const [isClient, setIsClient] = useState(false)
-  
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
-  if (!isClient) {
-    return (
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        height: '100vh',
-        fontFamily: 'system-ui, sans-serif'
-      }}>
-        <div>Loading Sanity Studio...</div>
-      </div>
-    )
-  }
-
   return <NextStudio config={config} />
 }
 
