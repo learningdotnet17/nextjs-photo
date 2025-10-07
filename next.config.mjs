@@ -1,4 +1,7 @@
 /** @type {import('next').NextConfig} */
+
+const isGitHubActions = process.env.GITHUB_ACTIONS === 'true'
+
 const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
@@ -6,27 +9,8 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Only use static export for GitHub Pages, not Vercel
-  ...(process.env.GITHUB_ACTIONS && {
-    output: "export",
-    // Skip /studio route during static export
-    exportPathMap: async function (
-      defaultPathMap,
-      { dev, dir, outDir, distDir, buildId }
-    ) {
-      // Remove studio routes from static export
-      const pathMap = { ...defaultPathMap }
-      Object.keys(pathMap).forEach((path) => {
-        if (path.startsWith('/studio')) {
-          delete pathMap[path]
-        }
-      })
-      return pathMap
-    },
-  }),
   images: {
-    // Unoptimized images only for GitHub Pages
-    unoptimized: process.env.GITHUB_ACTIONS ? true : false,
+    unoptimized: isGitHubActions,
     remotePatterns: [
       {
         protocol: "https",
@@ -34,6 +18,21 @@ const nextConfig = {
       },
     ],
   },
+}
+
+// Only add static export config for GitHub Pages
+if (isGitHubActions) {
+  nextConfig.output = "export"
+  nextConfig.exportPathMap = async function (defaultPathMap) {
+    // Remove studio routes from static export
+    const pathMap = {}
+    for (const [key, value] of Object.entries(defaultPathMap)) {
+      if (!key.startsWith('/studio')) {
+        pathMap[key] = value
+      }
+    }
+    return pathMap
+  }
 }
 
 export default nextConfig
