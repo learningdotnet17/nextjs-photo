@@ -1,7 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Static export requires all content to exist at build time
-  // You can add it back once you have photos in Sanity
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -10,13 +8,17 @@ const nextConfig = {
   },
   output: "export",
   images: {
-    unoptimized: false,
+    unoptimized: true, // Required for static export
     remotePatterns: [
       {
         protocol: "https",
         hostname: "cdn.sanity.io",
       },
     ],
+  },
+  // Exclude studio from static export (use sanity.studio for admin)
+  async generateBuildId() {
+    return 'build-' + Date.now()
   },
 }
 
