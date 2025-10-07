@@ -6,19 +6,19 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  output: "export",
+  // Only use static export for GitHub Pages, not Vercel
+  ...(process.env.GITHUB_ACTIONS && {
+    output: "export",
+  }),
   images: {
-    unoptimized: true, // Required for static export
+    // Unoptimized images only for GitHub Pages
+    unoptimized: process.env.GITHUB_ACTIONS ? true : false,
     remotePatterns: [
       {
         protocol: "https",
         hostname: "cdn.sanity.io",
       },
     ],
-  },
-  // Exclude studio from static export (use sanity.studio for admin)
-  async generateBuildId() {
-    return 'build-' + Date.now()
   },
 }
 
