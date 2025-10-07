@@ -6,7 +6,7 @@ export function Footer() {
           <div>
             <h3 className="font-serif text-2xl font-semibold mb-4">Brijesh Chawla</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Capturing the beauty of nature through the lens of an amateur photographer
+              Capturing the beauty of nature through the lens of an amateur photographer...
             </p>
           </div>
 
