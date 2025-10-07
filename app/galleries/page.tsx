@@ -10,9 +10,15 @@ export default async function GalleriesPage() {
   const galleries = await Promise.all(
     tags.map(async (tag) => {
       const photos = await getPhotosByTag(tag)
+      // Convert tag to title case for display
+      const displayTitle = tag
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ")
+      
       return {
-        slug: tag.toLowerCase().replace(/\s+/g, "-"),
-        title: tag,
+        slug: tag.replace(/\s+/g, "-"),
+        title: displayTitle,
         count: photos.length,
         coverImage: photos[0], // First photo as cover
       }

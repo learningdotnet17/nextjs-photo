@@ -23,10 +23,15 @@ export async function generateStaticParams() {
 }
 
 export const revalidate = 3600
+export const dynamicParams = true
 
 export default async function GalleryPage({ params }: GalleryPageProps) {
-  const tagName = params.slug
-    .split("-")
+  // Convert slug back to tag name (keep lowercase to match Sanity)
+  const tagName = params.slug.split("-").join(" ")
+  
+  // Get title case version for display
+  const displayTitle = tagName
+    .split(" ")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ")
 
@@ -40,7 +45,7 @@ export default async function GalleryPage({ params }: GalleryPageProps) {
     <main>
       <Navigation />
       <div className="pt-24">
-        <MasonryGallery photos={photos} title={tagName} description={`${photos.length} photographs`} />
+        <MasonryGallery photos={photos} title={displayTitle} description={`${photos.length} photographs`} />
       </div>
       <Footer />
     </main>
