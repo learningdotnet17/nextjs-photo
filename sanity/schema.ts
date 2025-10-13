@@ -76,6 +76,13 @@ export const photoSchema = defineType({
       initialValue: false,
     }),
     defineField({
+      name: "showInGalleries",
+      title: "Show in Galleries",
+      type: "boolean",
+      description: "Show this photo in the galleries section",
+      initialValue: true,
+    }),
+    defineField({
       name: "location",
       title: "Location Override",
       type: "string",

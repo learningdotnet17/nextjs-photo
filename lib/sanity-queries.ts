@@ -19,6 +19,7 @@ export interface Photo {
   tags: string[]
   orientation: "landscape" | "portrait"
   featured: boolean
+  showInGalleries: boolean
   order: number
   image: {
     asset: SanityImageAssetDocument & {
@@ -59,6 +60,7 @@ export async function getAllPhotos(): Promise<Photo[]> {
       tags,
       orientation,
       featured,
+      showInGalleries,
       order,
       image {
         asset-> {
@@ -87,6 +89,7 @@ export async function getFeaturedPhotos(): Promise<Photo[]> {
       tags,
       orientation,
       featured,
+      showInGalleries,
       order,
       image {
         asset-> {
@@ -104,8 +107,8 @@ export async function getFeaturedPhotos(): Promise<Photo[]> {
   )
 }
 
-// Get photos by tag
-export async function getPhotosByTag(tag: string): Promise<Photo[]> {
+// Get photos by special tag (for Recent, AboutMe, Hero - no gallery filter)
+async function getPhotosBySpecialTag(tag: string): Promise<Photo[]> {
   return client.fetch(
     `*[_type == "photo" && $tag in tags] | order(order asc, _createdAt desc) {
       _id,
@@ -115,6 +118,37 @@ export async function getPhotosByTag(tag: string): Promise<Photo[]> {
       tags,
       orientation,
       featured,
+      showInGalleries,
+      order,
+      image {
+        asset-> {
+          _id,
+          url,
+          metadata
+        },
+        alt
+      },
+      location,
+      camera,
+      lens,
+      aperture
+    }`,
+    { tag },
+  )
+}
+
+// Get photos by tag (for galleries - only photos with showInGalleries = true or undefined)
+export async function getPhotosByTag(tag: string): Promise<Photo[]> {
+  return client.fetch(
+    `*[_type == "photo" && $tag in tags && (showInGalleries == true || !defined(showInGalleries))] | order(order asc, _createdAt desc) {
+      _id,
+      title,
+      headline,
+      description,
+      tags,
+      orientation,
+      featured,
+      showInGalleries,
       order,
       image {
         asset-> {
@@ -135,13 +169,25 @@ export async function getPhotosByTag(tag: string): Promise<Photo[]> {
 
 // Get recent photos (tagged with "Recent")
 export async function getRecentPhotos(): Promise<Photo[]> {
-  return getPhotosByTag("Recent")
+  return getPhotosBySpecialTag("Recent")
 }
 
-// Get all unique tags (excluding "Recent")
+// Get About Me photo (tagged with "selfie")
+export async function getAboutMePhoto(): Promise<Photo | null> {
+  const photos = await getPhotosBySpecialTag("selfie")
+  return photos[0] || null
+}
+
+// Get all unique tags for galleries (excluding special tags and only from gallery photos)
 export async function getAllTags(): Promise<string[]> {
-  const tags = await client.fetch<string[]>(`array::unique(*[_type == "photo"].tags[])`)
-  return tags.filter((tag) => tag !== "Recent").sort()
+  const tags = await client.fetch<string[]>(
+    `array::unique(*[_type == "photo" && (showInGalleries == true || !defined(showInGalleries))].tags[])`
+  )
+  // Filter out sentence case special tags (Recent, Hero, AboutMe, etc.)
+  return tags.filter((tag) => {
+    // Keep only lowercase tags (gallery categories)
+    return tag === tag.toLowerCase()
+  }).sort()
 }
 
 // Extract metadata from photo, preferring manual overrides over EXIF

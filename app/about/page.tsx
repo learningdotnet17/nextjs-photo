@@ -1,8 +1,11 @@
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { Camera, Mountain, Heart } from "lucide-react"
+import { getAboutMePhoto } from "@/lib/sanity-queries"
+import { urlFor } from "@/sanity/client"
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const aboutPhoto = await getAboutMePhoto()
   return (
     <main>
       <Navigation />
@@ -17,11 +20,24 @@ export default function AboutPage() {
 
           <div className="grid md:grid-cols-2 gap-12 mb-16">
             <div className="aspect-[3/4] rounded-lg overflow-hidden bg-muted">
-              <img
-                src="/placeholder.svg?height=800&width=600"
-                alt="Photographer in nature"
-                className="w-full h-full object-cover"
-              />
+              {aboutPhoto ? (
+                <img
+                  src={urlFor(aboutPhoto.image)
+                    .width(600)
+                    .height(800)
+                    .fit("crop")
+                    .crop('focalpoint')
+                    .url() || "/placeholder.svg"}
+                  alt={aboutPhoto.image.alt || "Photographer in nature"}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <img
+                  src="/placeholder.svg?height=800&width=600"
+                  alt="Photographer in nature"
+                  className="w-full h-full object-cover"
+                />
+              )}
             </div>
 
             <div className="flex flex-col justify-center space-y-6">
