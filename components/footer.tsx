@@ -4,9 +4,9 @@ export function Footer() {
       <div className="container mx-auto px-6 py-12">
         <div className="grid md:grid-cols-3 gap-8 mb-8">
           <div>
-            <h3 className="font-serif text-2xl font-semibold mb-4">Brijesh Chawla</h3>
+            <h3 className="font-serif text-2xl font-semibold mb-4">LIGHT&nbsp;&nbsp;❤️ED</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Capturing the beauty of nature through the lens of an amateur photographer....
+              Sharing the beauty of nature through technolgy and art...
             </p>
           </div>
 
@@ -36,21 +36,14 @@ export function Footer() {
             <ul className="space-y-2 text-sm">
               <li>
                 <a
-                  href="https://instagram.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="https://www.instagram.com/newenglandcountryside/"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Instagram
+                  Send DM on Instagram
                 </a>
               </li>
               <li>
-                <a
-                  href="mailto:hello@example.com"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Email
-                </a>
+                Email - contact [a-t] brijeshchawla [d-o-t] com
               </li>
             </ul>
           </div>

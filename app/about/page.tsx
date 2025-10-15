@@ -59,7 +59,7 @@ export default async function AboutPage() {
                   <div>
                     <h3 className="font-semibold mb-1">Equipment</h3>
                     <p className="text-sm text-muted-foreground">
-                      Canon EOS R5, various lenses from 16mm to 200mm, and a sturdy tripod
+                      Sony A7RIII, Sony 100-400GM, Sony 24-105GM, Canon 16-35L, Tamron 90mm macro, Tokina 90mm macro, Sony A6000
                     </p>
                   </div>
                 </div>
@@ -69,7 +69,7 @@ export default async function AboutPage() {
                   <div>
                     <h3 className="font-semibold mb-1">Favorite Locations</h3>
                     <p className="text-sm text-muted-foreground">
-                      Pacific Northwest, Rocky Mountains, Iceland, and the American Southwest
+                      National Parks, water bodies, lighthouses, and cities
                     </p>
                   </div>
                 </div>
@@ -79,7 +79,7 @@ export default async function AboutPage() {
                   <div>
                     <h3 className="font-semibold mb-1">Philosophy</h3>
                     <p className="text-sm text-muted-foreground">
-                      Minimal editing, maximum patience. I believe in capturing nature as authentically as possible
+                      I am not documenting the scene, I am creating art. I like to capture the texture of skies and the clouds. I like to bring the essence of the moment to the photograph.
                     </p>
                   </div>
                 </div>
@@ -95,13 +95,7 @@ export default async function AboutPage() {
             </p>
             <div className="flex flex-wrap gap-4">
               <a
-                href="mailto:hello@example.com"
-                className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
-              >
-                Send Email
-              </a>
-              <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/newenglandcountryside/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-6 py-3 border border-border rounded-lg hover:bg-accent transition-colors"
