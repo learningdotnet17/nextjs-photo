@@ -4,14 +4,11 @@ import { visionTool } from "@sanity/vision"
 import { media } from "sanity-plugin-media"
 import { schemaTypes } from "./schema"
 
-const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!
-const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET!
-
 export default defineConfig({
   name: "default",
   title: "Brijesh Chawla Photography",
-  projectId,
-  dataset,
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
   basePath: "/studio",
 
   plugins: [structureTool(), visionTool(), media()],

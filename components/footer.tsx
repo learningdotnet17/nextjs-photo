@@ -43,7 +43,9 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                Email - contact [a-t] brijeshchawla [d-o-t] com
+                <a href="mailto:contact[a-t]brijeshchawla[d-o-t]com" className="text-muted-foreground hover:text-foreground transition-colors">
+                Email
+                </a>
               </li>
             </ul>
           </div>
