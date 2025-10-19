@@ -52,7 +52,7 @@ export function Footer() {
         </div>
 
         <div className="pt-8 border-t border-border text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Brijesh Chawla. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Brijesh Chawla. All rights reserved. v.25101801</p>
         </div>
       </div>
     </footer>
